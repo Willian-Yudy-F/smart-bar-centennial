@@ -1,0 +1,15 @@
+drink,category,sweet,bitter,alcoholic,citric,refreshing,price,ingredients,food,pairing_reason,image
+Seasonal Martini,Signature,1,2,5,1,2,32,"Tanqueray No.10 Gin, Chamomile, Apricot, Olive Oil","John Dory Ratatouille","Herbal notes match delicate white fish.",https://images.unsplash.com/photo-1574096079513-d8259312b785?w=500
+Seasonal Negroni,Signature,1,4,4,1,1,26,"Beefeater Gin, Campari, Sweet Vermouth, Seasonal Fruits","Prosciutto Flatbread","Salt cuts through Campari bitterness.",https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500
+Summer Rouge,Signature,3,1,2,3,4,24,"Absolut Elyx Vodka, Chardonnay Verjus","Fresh Oysters","Acidity enhances oceanic brininess.",https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?w=500
+Pommes on Vacation,Signature,2,1,4,2,3,24,"Monkey 47 Gin, Calvados, Clarified Apple, Yuzushu","Jack's Creek Sirloin","Crisp apple balances rich marbling.",https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500
+Maypop,Signature,4,1,2,4,4,27,"Olmeca Plata Tequila, Passionfruit, Pomelo, Wild Carrot","Squid a la Plancha","Tropical notes contrast smoky char.",https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500
+Patio Pounder,Signature,3,1,2,2,5,24,"Sherry, Fig Leaf, Strawberry, Cream Soda","Yellow Fin Tuna","Carbonation highlights tuna freshness.",https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=500
+Bittersweet Rose,Signature,2,4,3,2,2,23,"Olmeca Plata, Campari, Grapefruit, Aquafaba","Marinated Beetroots","Premium alternative to Paloma. Bittersweet profile.",data/images/bittersweet_rose.jpg
+Classic Paloma,Classic,2,3,2,4,4,20,"Tequila, Grapefruit Soda, Lime, Salt","Guacamole","Standard agave and grapefruit refreshment.",https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500
+Old Fashioned (NA),Non-Alcoholic,2,2,0,1,1,16,"NA Whisky, caramel, walnut, bitters","Cheese Board","Rich notes pair with aged cheeses.",https://images.unsplash.com/photo-1596711714777-17eb48625a6e?w=500
+Margarita (NA),Non-Alcoholic,2,1,0,4,4,16,"NA Tequila, Lyre's Triple Sec, lime, sea salt","Fish Tacos","Classic citrus profile for seafood.",https://images.unsplash.com/photo-1523905491727-d82018a34d75?w=500
+Mini Martini,Mini Cocktails,1,2,4,1,2,13,"Absolut, Madeira, Lemon Zest, Olive","Olives","Small format high ABV punch.",https://images.unsplash.com/photo-1458945037814-389ec6994bad?w=500
+Mini Negroni,Mini Cocktails,1,4,4,1,1,14,"Beefeater Gin, Campari, Antica Formula","Salami","Classic bitter profile in half size.",https://images.unsplash.com/photo-1510626176961-4b57d4fbc78d?w=500
+Mini Old Fashioned,Mini Cocktails,2,2,4,1,1,14,"Maker's Mark Bourbon, Angostura, Sugar","Beef Slider","Classic bourbon notes in mini form.",https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500
+Mini Stinger,Mini Cocktails,4,1,4,1,3,14,"Hennessy VS, Crème de Menthe","Chocolate Truffle","Minty and strong digestif.",https://images.unsplash.com/photo-1544145945-f904253db0ad?w=500
