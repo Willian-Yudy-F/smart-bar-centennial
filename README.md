@@ -1,5 +1,11 @@
 # 🍸 Smart Bar — Centennial Staff Intelligence
 
+
+## In plain English
+I was a bartender for years, and I know that under pressure staff recommend the drinks they remember — usually the cheap classics. This app gives them a better answer in one tap: pick what the guest ordered and it suggests the closest **signature cocktail** (plus a classic and a non-alcoholic option) and explains *why* the flavours match. Under the hood each drink is a vector of five flavour scores and **scikit-learn** finds the nearest neighbours with cosine similarity.
+
+**What I learned:** turning domain knowledge from a real job into a dataset, and building a tiny recommender system with pandas, scikit-learn and Streamlit.
+
 An AI-powered drink-pairing assistant that helps bar staff turn classic drink orders into signature cocktail sales.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
