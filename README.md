@@ -1,62 +1,106 @@
-# 🍸 Smart Bar — Centennial Staff Intelligence
+# Smart Bar Pairing Assistant
 
+[![CI](https://github.com/Willian-Yudy-F/smart-bar-centennial/actions/workflows/ci.yml/badge.svg)](https://github.com/Willian-Yudy-F/smart-bar-centennial/actions/workflows/ci.yml)
 
-## In plain English
-I was a bartender for years, and I know that under pressure staff recommend the drinks they remember — usually the cheap classics. This app gives them a better answer in one tap: pick what the guest ordered and it suggests the closest **signature cocktail** (plus a classic and a non-alcoholic option) and explains *why* the flavours match. Under the hood each drink is a vector of five flavour scores and **scikit-learn** finds the nearest neighbours with cosine similarity.
+A small content-based recommender that helps bar staff compare drinks by flavour profile.
+Select one drink and the Streamlit app returns the closest Classic, Signature and
+Non-Alcoholic option available, together with a short pairing explanation. A category is
+omitted when the selected drink is its only example in the demonstration dataset.
 
-**What I learned:** turning domain knowledge from a real job into a dataset, and building a tiny recommender system with pandas, scikit-learn and Streamlit.
+## Why I built it
 
-An AI-powered drink-pairing assistant that helps bar staff turn classic drink orders into signature cocktail sales.
+After seven years in hospitality, I knew that menu knowledge becomes harder to apply
+during a busy service. This prototype explores how a simple, explainable tool could help
+staff recall alternatives without hiding the reasoning behind a black-box score.
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)
-![scikit--learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat&logo=scikitlearn&logoColor=white)
-![pandas](https://img.shields.io/badge/pandas-150458?style=flat&logo=pandas&logoColor=white)
+This is a portfolio demonstration, not a production sales system. It does not use guest
+profiles, transaction history or a trained predictive model.
 
-## The Problem
+## How it works
 
-Bar staff know the menu, but under pressure they default to the drinks they remember — usually the classics. Signature cocktails ($24–$32) sit on the menu with no systematic way to recommend them.
+Each drink is represented by five manually assigned scores from 0 to 5:
 
-## The Solution
+- sweet;
+- bitter;
+- alcoholic;
+- citric;
+- refreshing.
 
-This app gives staff an instant, flavor-based recommendation for any drink a guest orders or shows interest in:
+The recommender calculates cosine similarity between those vectors, removes the selected
+drink and returns the highest-scoring available option in each target category.
 
-1. Each drink is profiled across five flavor dimensions: **sweet, bitter, alcoholic, citric, refreshing**
-2. A **cosine-similarity matrix** (scikit-learn) finds the closest matches across the menu
-3. For every selection, the app returns the best pairing in each category — **Classic**, **Signature** and **Non-Alcoholic** — with the pairing reason and a food match
-
-Staff see *why* the recommendation works, so they can explain it to the guest naturally.
-
-## How It Works
-
+```text
+data/drinks.csv
+      │
+      ▼
+validate required fields and score ranges
+      │
+      ▼
+build five-feature matrix
+      │
+      ▼
+calculate cosine similarity
+      │
+      ▼
+return one available result per target category
 ```
-data/drinks.csv ──► flavor feature matrix ──► cosine similarity ──► top match per category
-                    (sweet, bitter, ...)      (scikit-learn)        (Classic / Signature / N-A)
-```
 
-## Running Locally
+## What the score means
+
+A high match means two drinks point in a similar direction across the five chosen flavour
+dimensions. It does not mean a guest will buy or enjoy the recommendation. The attributes
+are manually scored hypotheses, and the demo prices are not live venue data.
+
+## Run locally
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Project Structure
+Run the automated checks with:
 
-| File | Purpose |
-|------|---------|
-| `app.py` | Streamlit UI — drink selection, pairing cards, strategy context |
-| `recommender.py` | Similarity engine — builds the flavor matrix and returns recommendations |
-| `data/drinks.csv` | Drink database: category, price, ingredients, flavor profile, food pairing |
-| `data/scraper.py` | Data collection helper |
+```bash
+pytest -q
+```
 
-## Tech Stack
+## Project structure
 
-- **Python** — core language
-- **Streamlit** — interactive web UI
-- **pandas** — data handling
-- **scikit-learn** — cosine similarity for flavor matching
+```text
+app.py                 Streamlit interface
+recommender.py         validation and similarity engine
+data/drinks.csv        demonstration menu and flavour scores
+data/images/           local supporting images
+tests/                 recommender and dataset tests
+```
+
+## Design decisions
+
+- Use a transparent content-based method instead of calling the prototype “AI-powered”.
+- Validate the CSV before calculating recommendations.
+- Resolve project files from the repository directory so the app does not depend on the
+  terminal's current folder.
+- Keep the engine separate from Streamlit so it can be tested without opening the UI.
+- Remove the unfinished web scraper; menu updates should use a documented, permitted data
+  source rather than placeholder scraping code.
+
+## Limitations
+
+- Only 14 demonstration drinks are included.
+- Flavour scores are manually assigned and have not been validated with guests or staff.
+- Cosine similarity ignores price preference, allergies, availability and service context.
+- Image URLs depend on third-party hosting unless a local image is provided.
+- No sales uplift or return on investment has been measured.
+
+## Possible next step
+
+The separate Bar Demand Analytics idea should use synthetic or properly anonymised event
+sales data to forecast staffing and stock. It should not be presented as evidence that
+this pairing prototype improves revenue.
 
 ---
 
-*Built by [Willian Yudy Futema](https://github.com/Willian-Yudy-F) — IT student in Sydney focused on data analytics.*
+Willian Yudy Futema · [Portfolio](https://willian-yudy-f.github.io/) ·
+[LinkedIn](https://www.linkedin.com/in/willian-yudy-futema/)
