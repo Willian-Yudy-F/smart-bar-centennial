@@ -1,78 +1,107 @@
-import streamlit as st
+from __future__ import annotations
+
+from pathlib import Path
+
 import pandas as pd
-from recommender import get_smart_recommendations
-import os
+import streamlit as st
 
-st.set_page_config(page_title="Centennial Staff Intelligence", layout="wide")
+from recommender import get_smart_recommendations, load_drinks
 
-st.markdown("""
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+st.set_page_config(
+    page_title="Smart Bar Pairing Assistant",
+    page_icon="🍸",
+    layout="wide",
+)
+
+st.markdown(
+    """
     <style>
     .stApp { background-color: #0e1117; }
-    .pairing-card { background-color: #1c2128; border-left: 5px solid #58a6ff; padding: 20px; border-radius: 8px; margin: 10px 0; }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True,
+)
+
 
 @st.cache_data
-def load_data():
-    return pd.read_csv("data/drinks.csv")
+def load_data() -> pd.DataFrame:
+    return load_drinks()
 
-df = load_data()
 
-st.title("🍸 Centennial Staff Intelligence")
-st.subheader("Professional Training & Sales Assistant")
+def show_drink_image(image_value: object) -> None:
+    image = str(image_value).strip()
+    if image.startswith(("https://", "http://")):
+        st.image(image, use_container_width=True)
+        return
 
-# Strategy Context
-with st.expander("📊 Strategic Goal & ROI"):
-    st.write("Convert Classic orders into Signature Cocktails ($24-$32) using flavor-matching AI.")
-
-# Selection
-selected_drink = st.selectbox("Guest interest or current drink:", df["drink"].tolist())
-d = df[df["drink"] == selected_drink].iloc[0]
-
-# UI Layout
-col_img, col_info = st.columns([1, 1.5]) 
-
-with col_img:
-    img_path = d.get('image', "https://via.placeholder.com/500") 
-    
-    if str(img_path).startswith('data/'):
-        if os.path.exists(img_path):
-            st.image(img_path, use_container_width=True)
-        else:
-            st.warning(f"Local file missing: {img_path}")
-            st.image("https://via.placeholder.com/500?text=Photo+Required", use_container_width=True)
+    local_path = PROJECT_ROOT / image
+    if image and local_path.is_file():
+        st.image(local_path, use_container_width=True)
     else:
-        st.image(img_path, use_container_width=True)
+        st.info("Image unavailable for this drink.")
 
-with col_info:
+
+drinks = load_data()
+
+st.title("🍸 Smart Bar Pairing Assistant")
+st.subheader("A transparent, flavour-based recommendation prototype")
+
+with st.expander("How this prototype works"):
+    st.write(
+        "Each drink has five manually assigned flavour scores. Cosine similarity "
+        "compares those scores and returns the closest available Classic, Signature "
+        "and Non-Alcoholic option. It does not use customer data or predict sales."
+    )
+
+selected_drink = st.selectbox(
+    "Guest interest or current drink:",
+    drinks["drink"].tolist(),
+)
+selected = drinks.loc[drinks["drink"] == selected_drink].iloc[0]
+
+image_column, info_column = st.columns([1, 1.5])
+
+with image_column:
+    show_drink_image(selected["image"])
+
+with info_column:
     st.header(selected_drink)
-    st.write(f"**Ingredients:** {d['ingredients']}")
-    st.write(f"**Price:** ${d['price']}")
-    st.markdown(f"""
-    <div class="pairing-card">
-        <h4>🍴 Strategic Food Pairing</h4>
-        <p><b>Recommended Dish:</b> {d['food']}</p>
-        <p><i>{d['pairing_reason']}</i></p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.write(f"**Ingredients:** {selected['ingredients']}")
+    st.write(f"**Demo price:** ${selected['price']:.0f}")
+    with st.container(border=True):
+        st.subheader("🍴 Food pairing")
+        st.write(f"**Suggested dish:** {selected['food']}")
+        st.write(selected["pairing_reason"])
 
 st.divider()
 
-if st.button("🔍 Generate AI Upsell Strategy"):
-    recs = get_smart_recommendations(selected_drink)
-    st.markdown("### Recommendation Strategy:")
-    cols = st.columns(3)
-    
-    titles = {"Classic": "🏛️ Similar Classic", "Signature": "✨ Signature Upsell", "Non-Alcoholic": "🥤 Zero Proof"}
-    
-    for i, (key, title) in enumerate(titles.items()):
-        with cols[i]:
-            r = recs.get(key)
-            if r:
-                st.markdown(f"#### {title}")
-                st.image(r.get('image', ""), use_container_width=True)
-                st.metric(r['drink'], f"${r['price']}")
-                with st.expander("Sales Argument"):
-                    st.write(f"**Why:** {r['reason']}")
-                    st.write(f"**Add-on:** {r['food']}")
-                    st.progress(r['similarity'], text=f"Flavor Match: {int(r['similarity']*100)}%")
+if st.button("Generate pairings", type="primary"):
+    recommendations = get_smart_recommendations(selected_drink, drinks)
+    st.markdown("### Similar options by category")
+    columns = st.columns(3)
+    titles = {
+        "Classic": "🏛️ Similar Classic",
+        "Signature": "✨ Signature Alternative",
+        "Non-Alcoholic": "🥤 Non-Alcoholic Option",
+    }
+
+    for column, (category, title) in zip(columns, titles.items()):
+        with column:
+            recommendation = recommendations.get(category)
+            if recommendation is None:
+                st.warning(f"No {category} option is available.")
+                continue
+
+            st.markdown(f"#### {title}")
+            show_drink_image(recommendation["image"])
+            st.metric(recommendation["drink"], f"${recommendation['price']:.0f}")
+            with st.expander("Pairing explanation"):
+                st.write(f"**Why:** {recommendation['reason']}")
+                st.write(f"**Food pairing:** {recommendation['food']}")
+            st.progress(
+                recommendation["similarity"],
+                text=f"Flavour match: {recommendation['similarity']:.0%}",
+            )
